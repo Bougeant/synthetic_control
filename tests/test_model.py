@@ -76,3 +76,10 @@ class TestSyntheticControl:
         sc.fit(X, y)
         y_synth = sc.predict(X)
         np.allclose(y_synth, [100.0, 97.1, 95.91, 106.6, 96.1, 93.9, 96.6], atol=0.1)
+
+    def test_fit_predict(self):
+        """Test the fit_predict method."""
+        X, y = self.get_test_data()
+        sc = SyntheticControl(treatment_start=datetime(2009, 1, 1))
+        y_synth = sc.fit_predict(X, y)
+        np.allclose(y_synth, [100.0, 97.1, 95.91, 106.6, 96.1, 93.9, 96.6], atol=0.1)
