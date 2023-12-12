@@ -20,10 +20,7 @@ class SyntheticControl:
         self.model = self.setup_model(force_positive, fit_intercept)
 
     def setup_model(self, force_positive, fit_intercept):
-        return Ridge(
-            positive=force_positive,
-            fit_intercept=fit_intercept,
-        )
+        return Ridge(positive=force_positive, fit_intercept=fit_intercept)
 
     def fit(self):
         pass
