@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from pandas.testing import assert_series_equal
 from sklearn.linear_model import Ridge
+from sklearn.utils.validation import check_is_fitted
 
 from synthetic_control.model import SyntheticControl
 
@@ -60,3 +61,18 @@ class TestSyntheticControl:
         sc = SyntheticControl(treatment_start=datetime(2009, 1, 1))
         treatment = sc._get_treatment_phase(X)
         assert np.allclose(treatment, [False] * 3 + [True] * 4)
+
+    def test_fit(self):
+        """Test the fit method."""
+        X, y = self.get_test_data()
+        sc = SyntheticControl(treatment_start=datetime(2009, 1, 1))
+        sc.fit(X, y)
+        check_is_fitted(sc.model)
+
+    def test_predict(self):
+        """Test the predict method."""
+        X, y = self.get_test_data()
+        sc = SyntheticControl(treatment_start=datetime(2009, 1, 1))
+        sc.fit(X, y)
+        y_synth = sc.predict(X)
+        np.allclose(y_synth, [100.0, 97.1, 95.91, 106.6, 96.1, 93.9, 96.6], atol=0.1)
