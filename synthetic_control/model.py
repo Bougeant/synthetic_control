@@ -60,7 +60,7 @@ class SyntheticControl:
         if self.treatment_end:
             post_treatment = X.index >= self.treatment_end
         else:
-            post_treatment = np.array(False, index=X.index)
+            post_treatment = np.array([False] * len(X))
         treatment = ~pre_treatment & ~post_treatment
         return pre_treatment, treatment, post_treatment
 
