@@ -85,7 +85,7 @@ class TestSyntheticControl:
         np.allclose(y_synth, [100.0, 97.1, 95.91, 106.6, 96.1, 93.9, 96.6], atol=0.1)
 
     def test_get_confidence_interval(self):
-        """ """
+        """Test the get_confidence_interval method."""
         X, y = self.get_test_data()
         sc = SyntheticControl(
             treatment_start=datetime(2009, 1, 1),
