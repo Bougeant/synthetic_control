@@ -6,7 +6,17 @@ from sklearn.linear_model import Ridge
 
 
 class SyntheticControl:
-    """A model to use the synthetic control method."""
+    """A model to use the synthetic control method.
+
+    Parameters
+    ----------
+    treatment_start : datetime
+        The start of the treatment period.
+    treatment_end : datetime
+        The end of the treatment period.
+    **kwargs
+        Additional keyword arguments to pass to the model.
+    """
 
     def __init__(self, treatment_start, treatment_end=None, **kwargs):
         self.treatment_start = treatment_start
