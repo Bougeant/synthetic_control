@@ -45,22 +45,18 @@ class TestSyntheticControl:
         assert sc.treatment_start == datetime(2009, 1, 1)
         assert sc.treatment_end == datetime(2010, 1, 1)
 
-    def test_create_treatment_phases(self):
+    def test_get_treatment_phase(self):
         """Test the _create_treatment_phases method."""
         X, y = self.get_test_data()
         sc = SyntheticControl(
             treatment_start=datetime(2009, 1, 1), treatment_end=datetime(2011, 1, 1)
         )
-        pre_treatment, treatment, post_treatment = sc._create_treatment_phases(X)
-        assert np.allclose(pre_treatment, [True] * 3 + [False] * 4)
+        treatment = sc._get_treatment_phase(X)
         assert np.allclose(treatment, [False] * 3 + [True] * 2 + [False] * 2)
-        assert np.allclose(post_treatment, [False] * 5 + [True] * 2)
 
-    def test_create_treatment_phases_no_end(self):
+    def test_get_treatment_phase_no_end(self):
         """Test the _create_treatment_phases method."""
         X, y = self.get_test_data()
         sc = SyntheticControl(treatment_start=datetime(2009, 1, 1))
-        pre_treatment, treatment, post_treatment = sc._create_treatment_phases(X)
-        assert np.allclose(pre_treatment, [True] * 3 + [False] * 4)
+        treatment = sc._get_treatment_phase(X)
         assert np.allclose(treatment, [False] * 3 + [True] * 4)
-        assert np.allclose(post_treatment, [False] * 7)
