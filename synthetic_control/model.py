@@ -2,6 +2,9 @@
 
 """ A class to use the synthetic control method. """
 
+import numpy as np
+import pandas as pd
+from sklearn.base import clone
 from sklearn.linear_model import Ridge
 
 
@@ -18,9 +21,22 @@ class SyntheticControl:
         Additional keyword arguments to pass to the model.
     """
 
-    def __init__(self, treatment_start, treatment_end=None, **kwargs):
+    CI_PERCENTILES = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
+
+    def __init__(
+        self,
+        treatment_start,
+        treatment_end=None,
+        ci_sample_size=100,
+        ci_fraction=0.1,
+        ci_percentiles=CI_PERCENTILES,
+        **kwargs,
+    ):
         self.treatment_start = treatment_start
         self.treatment_end = treatment_end
+        self.ci_sample_size = ci_sample_size
+        self.ci_fraction = ci_fraction
+        self.ci_percentiles = ci_percentiles
         self.model = self._setup_model(**kwargs)
 
     def _setup_model(self, alpha=1.0, positive=True, fit_intercept=False):
@@ -118,3 +134,29 @@ class SyntheticControl:
         """
         self.fit(X, y)
         return self.model.predict(X)
+
+    def get_confidence_interval(self, X, y):
+        """Return the confidence interval on the predictions for the synthetic
+        control group.
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            The data used to build the synthetic control group.
+        y : pandas.Series
+            The treatment group to match outside of the treatment period.
+
+        Returns
+        -------
+        y_pred : pandas.DataFrame
+            The quantile predictions for the synthetic control group.
+        """
+        preds = []
+        for _ in range(self.ci_sample_size):
+            X_iter = X.T.sample(frac=self.ci_fraction).T
+            model = clone(self.model)
+            model.fit(X_iter, y)
+            y_pred = model.predict(X_iter)
+            preds.append(y_pred)
+        ci = {q: np.percentile(preds, q=q, axis=0) for q in self.ci_percentiles}
+        return pd.DataFrame(ci, index=X.index)
