@@ -6,7 +6,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from pandas.testing import assert_series_equal
+from pandas.testing import assert_frame_equal
 from sklearn.linear_model import Ridge
 from sklearn.utils.validation import check_is_fitted
 
@@ -83,3 +83,21 @@ class TestSyntheticControl:
         sc = SyntheticControl(treatment_start=datetime(2009, 1, 1))
         y_synth = sc.fit_predict(X, y)
         np.allclose(y_synth, [100.0, 97.1, 95.91, 106.6, 96.1, 93.9, 96.6], atol=0.1)
+
+    def test_get_confidence_interval(self):
+        """ """
+        X, y = self.get_test_data()
+        sc = SyntheticControl(
+            treatment_start=datetime(2009, 1, 1),
+            ci_fraction=0.6,
+            ci_percentiles=[5, 95],
+        )
+        y_ci = sc.get_confidence_interval(X, y)
+        expected_df = pd.DataFrame(
+            {
+                5: [86.03, 76.70, 55.21, 45.35, 89.81, 84.82, 77.10],
+                95: [105.12, 108.86, 93.48, 123.64, 106.46, 123.66, 95.28],
+            },
+            index=X.index,
+        )
+        assert_frame_equal(y_ci, expected_df, atol=0.01)
