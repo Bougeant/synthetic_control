@@ -2,7 +2,6 @@
 
 """ A class to use the synthetic control method. """
 
-import numpy as np
 from sklearn.linear_model import Ridge
 
 
@@ -79,5 +78,6 @@ class SyntheticControl:
     def predict(self, X):
         return self.model.predict(X)
 
-    def fit_predict(self):
-        pass
+    def fit_predict(self, X, y):
+        self.fit(X, y)
+        return self.model.predict(X)
