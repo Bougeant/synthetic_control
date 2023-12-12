@@ -76,8 +76,35 @@ class SyntheticControl:
         return self
 
     def predict(self, X):
+        """Generate the predictions for the synthetic control group.
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            The data used to build the synthetic control group.
+
+        Returns
+        -------
+        y_pred : pandas.Series
+            The predictions for the synthetic control group.
+        """
         return self.model.predict(X)
 
     def fit_predict(self, X, y):
+        """Fit the model to the data outside of the treatment period and generate
+        the predictions for the synthetic control group.
+
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            The data used to build the synthetic control group.
+        y : pandas.Series
+            The treatment group to match outside of the treatment period.
+
+        Returns
+        -------
+        y_pred : pandas.Series
+            The predictions for the synthetic control group.
+        """
         self.fit(X, y)
         return self.model.predict(X)
