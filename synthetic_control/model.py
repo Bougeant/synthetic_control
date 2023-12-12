@@ -8,12 +8,7 @@ from sklearn.linear_model import Ridge
 class SyntheticControl:
     """A model to use the synthetic control method."""
 
-    def __init__(
-        self,
-        treatment_start,
-        treatment_end=None,
-        **kwargs,
-    ):
+    def __init__(self, treatment_start, treatment_end=None, **kwargs):
         self.treatment_start = treatment_start
         self.treatment_end = treatment_end
         self.model = self._setup_model(**kwargs)
