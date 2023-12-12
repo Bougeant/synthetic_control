@@ -56,10 +56,28 @@ class SyntheticControl:
         return treatment
 
     def fit(self, X, y):
-        pass
+        """Fit the model to the data outside of the treatment period.
 
-    def predict(self):
-        pass
+        Parameters
+        ----------
+        X : pandas.DataFrame
+            The data used to build the synthetic control group.
+        y : pandas.Series
+            The treatment group to match outside of the treatment period.
+
+        Returns
+        -------
+        self : SyntheticControl
+            The SyntheticControl with the fitted model.
+        """
+        fitting_period = ~self._get_treatment_phase(X)
+        X_train = X.loc[fitting_period]
+        y_train = y.loc[fitting_period]
+        self.model.fit(X_train, y_train)
+        return self
+
+    def predict(self, X):
+        return self.model.predict(X)
 
     def fit_predict(self):
         pass
