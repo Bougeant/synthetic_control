@@ -2,6 +2,7 @@
 
 """ A class to use the synthetic control method. """
 
+import numpy as np
 from sklearn.linear_model import Ridge
 
 
@@ -59,7 +60,7 @@ class SyntheticControl:
         if self.treatment_end:
             post_treatment = X.index >= self.treatment_end
         else:
-            post_treatment = False
+            post_treatment = np.array(False, index=X.index)
         treatment = ~pre_treatment & ~post_treatment
         return pre_treatment, treatment, post_treatment
 
