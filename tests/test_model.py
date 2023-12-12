@@ -9,7 +9,7 @@ from sklearn.linear_model import Ridge
 from synthetic_control.model import SyntheticControl
 
 
-class TestModel:
+class TestSyntheticControl:
     def test_create(self):
         sc = SyntheticControl(treatment_start=datetime(2009, 1, 1))
         assert isinstance(sc, SyntheticControl)
