@@ -23,7 +23,7 @@ class SyntheticControl:
         Additional keyword arguments to pass to the model.
     """
 
-    CI_PERCENTILES = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
+    CI_PERCENTILES = (5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95)
 
     def __init__(
         self,
