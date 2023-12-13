@@ -31,9 +31,19 @@ def get_plot_data(y, y_pred_ci, treatment_name):
     control_color = DEFAULT_PLOTLY_COLORS[1]
     y_pred = get_base_prediction(y_pred_ci)
     data = [
-        go.Scatter(x=y.index, y=y, name=treatment_name, line_color=treatment_color),
         go.Scatter(
-            x=y.index, y=y_pred, name="Synthetic Control", line_color=control_color
+            x=y.index,
+            y=y,
+            name=treatment_name,
+            line_color=treatment_color,
+            line_width=5,
+        ),
+        go.Scatter(
+            x=y.index,
+            y=y_pred,
+            name="Synthetic Control",
+            line_color=control_color,
+            line_width=5,
         ),
     ]
     data = add_confidence_interval(data, y_pred_ci, control_color)
