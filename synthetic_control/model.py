@@ -171,7 +171,7 @@ class SyntheticControl:
         return pd.DataFrame(ci, index=X.index)
 
     def compare(self, y, y_pred_ci, y_axis="Value"):
-        return compare.display_synthetic_control(
+        return compare.compare_to_synthetic_control(
             y,
             y_pred_ci,
             treatment_start=self.treatment_start,
