@@ -10,33 +10,43 @@ from plotly.colors import DEFAULT_PLOTLY_COLORS
 
 
 def display_synthetic_control(
-    y, y_pred_ci, treatment_start, treatment_end=None, y_axis="Value", **kwargs
+    y,
+    y_pred_ci,
+    treatment_start,
+    treatment_end=None,
+    treatment_name="Treatment",
+    y_axis="Value",
 ):
     """ """
-    data = get_plot_data(y, y_pred_ci, treatment_start, **kwargs)
+    data = get_plot_data(y, y_pred_ci, treatment_name)
     layout = get_plot_layout(y_axis)
     fig = go.Figure(data=data, layout=layout)
     fig = add_treatment_period(fig, treatment_start, treatment_end)
     return fig
 
 
-def get_plot_data(
-    y, y_pred_ci, treatment_start, treatment_end=None, treatment_name="Treatment"
-):
+def get_plot_data(y, y_pred_ci, treatment_name):
     """ """
     treatment_color = DEFAULT_PLOTLY_COLORS[0]
     control_color = DEFAULT_PLOTLY_COLORS[1]
+    y_pred = get_base_prediction(y_pred_ci)
     data = [
         go.Scatter(x=y.index, y=y, name=treatment_name, line_color=treatment_color),
         go.Scatter(
-            x=y.index,
-            y=y_pred_ci[50],
-            name="Synthetic Control",
-            line_color=control_color,
+            x=y.index, y=y_pred, name="Synthetic Control", line_color=control_color
         ),
     ]
     data = add_confidence_interval(data, y_pred_ci, control_color)
     return data
+
+
+def get_base_prediction(y_pred_ci):
+    """ """
+    if 50 in y_pred_ci:
+        y_pred = y_pred_ci[50]
+    else:
+        y_pred = y_pred_ci.mean(axis=1)
+    return y_pred
 
 
 def add_confidence_interval(data, y_pred_ci, color):
