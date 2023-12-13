@@ -19,8 +19,19 @@ class SyntheticControl:
         The start of the treatment period.
     treatment_end : datetime
         The end of the treatment period.
+    treatment_name : str
+        The name of the treatment group.
+    ci_sample_size : int
+        The number of times to generate predictions to build the confidence interval.
+    ci_fraction : float
+        The fraction of features to use when generating predictions to build the
+        confidence interval. This is used to increase the variance across predictions.
+        If the ci_fraction is 1.0, then all the predictions used to build the
+        confidence interval are identical.
+    ci_percentiles : tuple
+        The percentiles to provide for the confidence interval.
     **kwargs
-        Additional keyword arguments to pass to the model.
+        Additional keyword arguments to pass to the fitting model.
     """
 
     CI_PERCENTILES = (5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95)
