@@ -75,9 +75,9 @@ class SyntheticControl:
             A boolean series indicating whether the observation occurs during the
             treatment.
         """
-        treatment = X.index >= self.treatment_start
+        treatment = X.index > self.treatment_start
         if self.treatment_end:
-            treatment = treatment & (X.index < self.treatment_end)
+            treatment = treatment & (X.index <= self.treatment_end)
         return treatment
 
     def fit(self, X, y):
@@ -153,10 +153,12 @@ class SyntheticControl:
         """
         preds = []
         for i in range(self.ci_sample_size):
-            np.random.seed(i)
             X_iter = X.T.sample(frac=self.ci_fraction, random_state=i, replace=False).T
             model = clone(self.model)
-            model.fit(X_iter, y)
+            fitting_period = ~self._get_treatment_phase(X)
+            X_train = X_iter.loc[fitting_period]
+            y_train = y.loc[fitting_period]
+            model.fit(X_train, y_train)
             y_pred = model.predict(X_iter)
             preds.append(y_pred)
         ci = {q: np.percentile(preds, q=q, axis=0) for q in self.ci_percentiles}
