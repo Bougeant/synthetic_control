@@ -15,7 +15,20 @@ def compare_to_synthetic_control(
     treatment_name="Treatment",
     y_axis="Value",
 ):
-    """ """
+    """Display a comparison between the treatment group and the synthetic control group.
+
+    Parameters
+    ----------
+    y : pandas.Series
+        The treatment group.
+    y_pred_ci : pandas.DataFrame
+        The synthetic control group.
+    treatment_start : datetime
+        The start of the treatment period.
+    treatment_end : datetime
+        The end of the treatment period.
+
+    """
     data = get_plot_data(y, y_pred_ci, treatment_name)
     layout = get_plot_layout(y_axis)
     fig = go.Figure(data=data, layout=layout)
