@@ -28,6 +28,11 @@ def compare_to_synthetic_control(
     treatment_end : datetime
         The end of the treatment period.
 
+    Returns
+    -------
+    fig : plotly.graph_objects.Figure
+        The plotly figure showing the comparison between the treatment group and the
+        synthetic control group.
     """
     data = get_plot_data(y, y_pred_ci, treatment_name)
     layout = get_plot_layout(y_axis)
@@ -37,10 +42,27 @@ def compare_to_synthetic_control(
 
 
 def get_plot_data(y, y_pred_ci, treatment_name):
-    """ """
+    """Create the plotly data for the comparison plot between the treatment group
+    and the synthetic control group, including the confidence intervals.
+
+    Parameters
+    ----------
+    y : pandas.Series
+        The actual value of the metric for the treatment group.
+    y_pred_ci : pandas.DataFrame
+        The predicted values for each percentile for the synthetic control group.
+    treatment_name : str
+        The name of the treatment group.
+
+    Returns
+    -------
+    data : list
+        The list of plotly data objects to display the comparison between the
+        treatment group and the synthetic control group.
+    """
     treatment_color = DEFAULT_PLOTLY_COLORS[0]
     control_color = DEFAULT_PLOTLY_COLORS[1]
-    y_pred = get_base_prediction(y_pred_ci)
+    y_pred = get_baseline_prediction(y_pred_ci)
     data = [
         go.Scatter(
             x=y.index,
@@ -57,12 +79,25 @@ def get_plot_data(y, y_pred_ci, treatment_name):
             line_width=5,
         ),
     ]
-    data = add_confidence_interval(data, y_pred_ci, control_color)
+    data += add_confidence_interval(y_pred_ci, control_color)
     return data
 
 
-def get_base_prediction(y_pred_ci):
-    """ """
+def get_baseline_prediction(y_pred_ci):
+    """Return the baseline prediction for the synthetic control group. The baseline
+    prediction is the prediction for the 50th percentile if available, or the average
+    of the predictions for all percentiles otherwise.
+
+    Parameters
+    ----------
+    y_pred_ci : pandas.DataFrame
+        The predicted values for each percentile for the synthetic control group.
+
+    Returns
+    -------
+    y_pred : pandas.Series
+        The baseline prediction for the synthetic control group.
+    """
     if 50 in y_pred_ci:
         y_pred = y_pred_ci[50]
     else:
@@ -70,8 +105,16 @@ def get_base_prediction(y_pred_ci):
     return y_pred
 
 
-def add_confidence_interval(data, y_pred_ci, color):
-    """ """
+def add_confidence_interval(y_pred_ci, color):
+    """Add the confidence interval to the plotly data.
+
+    Parameters
+    ----------
+    y_pred_ci : pandas.DataFrame
+        The predicted values for each percentile for the synthetic control group.
+    color : str
+        The color to use for the synthetic control group.
+    """
     min_ci = y_pred_ci.columns.min()
     max_ci = y_pred_ci.columns.max()
     ci_range = max_ci - min_ci
@@ -79,8 +122,9 @@ def add_confidence_interval(data, y_pred_ci, color):
     columns = y_pred_ci.columns.sort_values(
         key=lambda x: np.abs(50 - x), ascending=False
     )
+    ci_data = []
     for i, col in enumerate(columns):
-        data.append(
+        ci_data.append(
             go.Scatter(
                 x=y_pred_ci.index,
                 y=y_pred_ci[col],
@@ -92,7 +136,7 @@ def add_confidence_interval(data, y_pred_ci, color):
                 legendgroup="CI",
             )
         )
-    return data
+    return ci_data
 
 
 def get_opacity_color(color):
