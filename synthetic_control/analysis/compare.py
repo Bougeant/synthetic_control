@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 from plotly.colors import DEFAULT_PLOTLY_COLORS
 
 
-def display_synthetic_control(
+def compare_to_synthetic_control(
     y,
     y_pred_ci,
     treatment_start,
@@ -108,5 +108,7 @@ def add_treatment_period(fig, treatment_start, treatment_end):
 
 def get_plot_layout(y_axis):
     """ """
-    layout = go.Layout(xaxis={"title": "Date"}, yaxis={"title": y_axis})
+    layout = go.Layout(
+        xaxis={"title": "Date"}, yaxis={"title": y_axis}, template="none"
+    )
     return layout
