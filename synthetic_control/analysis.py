@@ -2,6 +2,7 @@
 
 """ Functions to provide analysis for the synthetic control method. """
 
+import numpy as np
 import plotly.graph_objects as go
 from plotly.colors import DEFAULT_PLOTLY_COLORS
 
@@ -33,6 +34,7 @@ def _get_plot_data(
         ),
     ]
     data = _add_confidence_interval(data, y_pred_ci, control_color)
+    # data.append()
     return data
 
 
@@ -42,7 +44,10 @@ def _add_confidence_interval(data, y_pred_ci, color):
     max_ci = y_pred_ci.columns.max()
     ci_range = max_ci - min_ci
     color = _get_opacity_color(color)
-    for i, col in enumerate(y_pred_ci.columns):
+    columns = y_pred_ci.columns.sort_values(
+        key=lambda x: np.abs(50 - x), ascending=False
+    )
+    for i, col in enumerate(columns):
         data.append(
             go.Scatter(
                 x=y_pred_ci.index,
@@ -52,6 +57,7 @@ def _add_confidence_interval(data, y_pred_ci, color):
                 line_color=color,
                 fillcolor=color,
                 showlegend=i == 0,
+                legendgroup="CI",
             )
         )
     return data

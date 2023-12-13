@@ -152,8 +152,11 @@ class SyntheticControl:
             The quantile predictions for the synthetic control group.
         """
         preds = []
-        for _ in range(self.ci_sample_size):
-            X_iter = X.T.sample(frac=self.ci_fraction).T
+        for i in range(self.ci_sample_size):
+            np.random.seed(i)
+            X_iter = X.T.sample(frac=self.ci_fraction, random_state=i, replace=False).T[
+                list([X.columns][0])
+            ]
             model = clone(self.model)
             model.fit(X_iter, y)
             y_pred = model.predict(X_iter)
