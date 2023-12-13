@@ -81,7 +81,7 @@ def add_treatment_period(fig, treatment_start, treatment_end):
             x=treatment_end.timestamp() * 1000,
             line_color="black",
             line_dash="dash",
-            annotation={"text": "Treatment End"},
+            annotation={"text": "Treatment End", "xanchor": "center", "y": 1.1},
         )
     return fig
 
