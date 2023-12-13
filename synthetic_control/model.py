@@ -7,6 +7,8 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.linear_model import Ridge
 
+from synthetic_control.analysis import display_synthetic_control
+
 
 class SyntheticControl:
     """A model to use the synthetic control method.
@@ -27,6 +29,7 @@ class SyntheticControl:
         self,
         treatment_start,
         treatment_end=None,
+        treatment_name="Treatment",
         ci_sample_size=100,
         ci_fraction=0.1,
         ci_percentiles=CI_PERCENTILES,
@@ -34,6 +37,7 @@ class SyntheticControl:
     ):
         self.treatment_start = treatment_start
         self.treatment_end = treatment_end
+        self.treatment_name = treatment_name
         self.ci_sample_size = ci_sample_size
         self.ci_fraction = ci_fraction
         self.ci_percentiles = ci_percentiles
@@ -148,7 +152,7 @@ class SyntheticControl:
 
         Returns
         -------
-        y_pred : pandas.DataFrame
+        y_pred_ci : pandas.DataFrame
             The quantile predictions for the synthetic control group.
         """
         preds = []
@@ -163,3 +167,13 @@ class SyntheticControl:
             preds.append(y_pred)
         ci = {q: np.percentile(preds, q=q, axis=0) for q in self.ci_percentiles}
         return pd.DataFrame(ci, index=X.index)
+
+    def compare(self, y, y_pred_ci, y_axis="Value"):
+        return display_synthetic_control(
+            y,
+            y_pred_ci,
+            treatment_start=self.treatment_start,
+            treatment_end=self.treatment_end,
+            treatment_name=self.treatment_name,
+            y_axis=y_axis,
+        )
