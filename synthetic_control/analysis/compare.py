@@ -114,6 +114,11 @@ def add_confidence_interval(y_pred_ci, color):
         The predicted values for each percentile for the synthetic control group.
     color : str
         The color to use for the synthetic control group.
+
+    Returns
+    -------
+    ci_data : list
+        The list of plotly data objects to display the confidence interval.
     """
     min_ci = y_pred_ci.columns.min()
     max_ci = y_pred_ci.columns.max()
@@ -139,12 +144,41 @@ def add_confidence_interval(y_pred_ci, color):
     return ci_data
 
 
-def get_opacity_color(color):
-    return color.replace("rgb", "rgba").replace(")", ", 0.1)")
+def get_opacity_color(color, opacity=0.1):
+    """Return the color with the specified opacity.
+
+    Parameters
+    ----------
+    color : str
+        A color in rgb string format.
+    opacity : float
+        The opacity to apply to the color.
+
+    Returns
+    -------
+    color : str
+        The color with the specified opacity.
+    """
+    return color.replace("rgb", "rgba").replace(")", f", {opacity})")
 
 
 def add_treatment_period(fig, treatment_start, treatment_end):
-    """ """
+    """Add vertical lines to the plotly figure to delimitate the treatment period.
+
+    Parameters
+    ----------
+    fig : plotly.graph_objects.Figure
+        The plotly figure to add the vertical lines to.
+    treatment_start : datetime
+        The start of the treatment period.
+    treatment_end : datetime
+        The end of the treatment period.
+
+    Returns
+    -------
+    fig : plotly.graph_objects.Figure
+        The plotly figure with the vertical lines added.
+    """
     fig.add_vline(
         x=treatment_start.timestamp() * 1000,
         line_color="black",
@@ -162,7 +196,20 @@ def add_treatment_period(fig, treatment_start, treatment_end):
 
 
 def get_plot_layout(y_axis):
-    """ """
+    """Return the plotly layout for the comparison plot between the treatment group
+    and the synthetic control group.
+
+    Parameters
+    ----------
+    y_axis : str
+        The label for the y-axis.
+
+    Returns
+    -------
+    layout : plotly.graph_objects.Layout
+        The plotly layout for the comparison plot between the treatment group and the
+        synthetic control group.
+    """
     layout = go.Layout(
         xaxis={"title": "Date"}, yaxis={"title": y_axis}, template="none"
     )
