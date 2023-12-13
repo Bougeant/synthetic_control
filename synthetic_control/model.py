@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.linear_model import Ridge
 
-from synthetic_control.analysis import display_synthetic_control
+from synthetic_control.analysis import compare
 
 
 class SyntheticControl:
@@ -141,7 +141,9 @@ class SyntheticControl:
 
     def get_confidence_interval(self, X, y):
         """Return the confidence interval on the predictions for the synthetic
-        control group.
+        control group. In order to generate a range of possible predictions, the
+        pre-treatment fitting model is trained on a subset (ci_fraction) of the
+        features.
 
         Parameters
         ----------
@@ -169,7 +171,7 @@ class SyntheticControl:
         return pd.DataFrame(ci, index=X.index)
 
     def compare(self, y, y_pred_ci, y_axis="Value"):
-        return display_synthetic_control(
+        return compare.display_synthetic_control(
             y,
             y_pred_ci,
             treatment_start=self.treatment_start,
