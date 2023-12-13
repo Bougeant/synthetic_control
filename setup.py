@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-requirements = ["pandas", "scikit-learn"]
+requirements = ["pandas", "scikit-learn", "plotly"]
 
 dev_requirements = [
     "black",
@@ -14,7 +14,7 @@ dev_requirements = [
 
 test_requirements = ["tox"]
 
-jupyter_requirements = ["jupyter", "jupytext"]
+jupyter_requirements = ["jupyter", "jupyterlab<4", "jupytext"]
 
 setup(
     name="synthetic-control",
