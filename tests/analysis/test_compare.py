@@ -76,7 +76,7 @@ class TestCompare:
         assert treatment_end == datetime(2010, 1, 1)
 
     def test_get_plot_layout(self):
-        """ """
+        """Test the get_plot_layout function."""
         layout = compare.get_plot_layout(y_axis="Test value")
         assert isinstance(layout, go.Layout)
         assert layout.xaxis.title.text == "Date"
