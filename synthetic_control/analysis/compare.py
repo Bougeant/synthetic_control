@@ -62,6 +62,9 @@ def get_plot_data(y, y_pred_ci, treatment_name, show_impact):
         The predicted values for each percentile for the synthetic control group.
     treatment_name : str
         The name of the treatment group.
+    show_impact : bool
+        Whether to show the impact of the treatment on the treatment group instead of
+        the absolute values.
 
     Returns
     -------
@@ -216,6 +219,9 @@ def get_plot_layout(y_axis, show_impact):
     ----------
     y_axis : str
         The label for the y-axis.
+    show_impact : bool
+        Whether to show the impact of the treatment on the treatment group instead of
+        the absolute values.
 
     Returns
     -------
