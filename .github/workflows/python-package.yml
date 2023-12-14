@@ -30,20 +30,18 @@ jobs:
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-    - name: Run black validation
-      uses: psf/black@stable
-      with:
-        options: "--check --verbose"
-    - name: Run isort validation
-      uses: isort/isort-action@master
-      with:
-          requirementsFiles: "requirements.txt requirements-dev.txt"
-    - name: Lint with flake8
+    # - name: Run black validation
+    #   uses: psf/black@stable
+    #   with:
+    #     options: "--check --verbose"
+    # - name: Run isort validation
+    #   uses: isort/isort-action@master
+    #   with:
+    #       requirementsFiles: "requirements.txt requirements-dev.txt"
+    - name: Lint with black, isort and flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        # flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --max-complexity=10 --max-line-length=88 --show-source --statistics
-    - name: Test with pytest
+        black synthetic_control tests setup.py --check --verbose
+        isort synthetic_control tests setup.py --check-only
+        flake8 synthetic_control tests setup.py  --count --max-complexity=10  --max-line-length=88 --show-source --statistics    - name: Test with pytest
       run: |
         pytest
