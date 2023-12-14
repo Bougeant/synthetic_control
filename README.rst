@@ -4,6 +4,8 @@ Synthetic Control
 
 A user friendly package for the Synthetic Control Method.
 
+..  image:: .images/california_prop_99_comparison.png
+
 Installation
 ------------
 Install using pip::
