@@ -1,6 +1,6 @@
-.. raw:: html
-
-   <h1>Synthetic Control</h1>
+#################
+Synthetic Control
+#################
 
 A user friendly package for the Synthetic Control Method.
 
