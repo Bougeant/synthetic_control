@@ -5,7 +5,6 @@ History
 -------------------
 * Comment out setup.py long description.
 
-
 0.0.3 (2023-12-14)
 -------------------
 * Fix pypi branch for github actions workflow.
