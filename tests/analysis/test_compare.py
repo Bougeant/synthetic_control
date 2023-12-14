@@ -58,6 +58,11 @@ class TestCompare:
         assert [d.name for d in data] == ["90% confidence interval"] * 4
         assert all([isinstance(d, go.Scatter) for d in data])
 
+    def test_get_opacity_color(self):
+        """Test the get_opacity_color function."""
+        color = "rgb(140, 20, 14)"
+        assert compare.get_opacity_color(color, opacity=0.5) == "rgba(140, 20, 14, 0.5)"
+
     def test_add_treatment_period(self):
         """Test the add_treatment_period function."""
         fig = go.Figure()
@@ -69,3 +74,10 @@ class TestCompare:
         treatment_end = datetime.fromtimestamp(fig.layout.shapes[1].x0 / 1000)
         assert treatment_start == datetime(2008, 1, 1)
         assert treatment_end == datetime(2010, 1, 1)
+
+    def test_get_plot_layout(self):
+        """ """
+        layout = compare.get_plot_layout(y_axis="Test value")
+        assert isinstance(layout, go.Layout)
+        assert layout.xaxis.title.text == "Date"
+        assert layout.yaxis.title.text == "Test value"
