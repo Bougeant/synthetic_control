@@ -30,9 +30,21 @@ class TestCompare:
         """Test the get_plot_data function."""
         y = pd.Series([100, 90, 80])
         y_pred_ci = pd.DataFrame({5: [96, 81, 73], 95: [118, 101, 100]})
-        data = compare.get_plot_data(y, y_pred_ci, "Treatment")
+        data = compare.get_plot_data(y, y_pred_ci, "Treatment", show_impact=False)
         assert len(data) == 4
         assert all([isinstance(d, go.Scatter) for d in data])
+        assert list(data[0].y) == [100, 90, 80]
+        assert list(data[-1].y) == [118, 101, 100]
+
+    def test_get_plot_data_impact(self):
+        """Test the get_plot_data function."""
+        y = pd.Series([100, 90, 80])
+        y_pred_ci = pd.DataFrame({5: [96, 81, 73], 95: [118, 101, 100]})
+        data = compare.get_plot_data(y, y_pred_ci, "Treatment", show_impact=True)
+        assert len(data) == 4
+        assert all([isinstance(d, go.Scatter) for d in data])
+        assert list(data[0].y) == [0, 0, 0]
+        assert list(data[-1].y) == [18, 11, 20]
 
     def test_get_baseline_prediction_with_median(self):
         """Test the get_baseline_prediction function with median."""
@@ -77,7 +89,14 @@ class TestCompare:
 
     def test_get_plot_layout(self):
         """Test the get_plot_layout function."""
-        layout = compare.get_plot_layout(y_axis="Test value")
+        layout = compare.get_plot_layout(y_axis="Test value", show_impact=False)
         assert isinstance(layout, go.Layout)
         assert layout.xaxis.title.text == "Date"
         assert layout.yaxis.title.text == "Test value"
+
+    def test_get_plot_layout_impact(self):
+        """Test the get_plot_layout function."""
+        layout = compare.get_plot_layout(y_axis="Test value", show_impact=True)
+        assert isinstance(layout, go.Layout)
+        assert layout.xaxis.title.text == "Date"
+        assert layout.yaxis.title.text == "Difference in Test value"
