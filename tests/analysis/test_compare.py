@@ -14,14 +14,8 @@ from synthetic_control.analysis import compare
 class TestCompare:
     def tests_compare_to_synthetic_control(self):
         """Test the compare_to_synthetic_control function."""
-        y = pd.Series([100, 90, 80, 120, 100, 90, 100])
-        y_pred_ci = pd.DataFrame(
-            {
-                5: [96.8, 81.2, 71.4, 51.4, 86.5, 70.7, 82.3],
-                95: [118.1, 101.6, 100.1, 169.9, 121.1, 140.7, 98.2],
-            },
-            index=y.index,
-        )
+        y = pd.Series([100, 90, 80])
+        y_pred_ci = pd.DataFrame({5: [96, 81, 73], 95: [118, 101, 100]})
         fig = compare.compare_to_synthetic_control(
             y, y_pred_ci, datetime(2008, 1, 1), datetime(2010, 1, 1)
         )
@@ -34,14 +28,8 @@ class TestCompare:
 
     def test_get_plot_data(self):
         """Test the get_plot_data function."""
-        y = pd.Series([100, 90, 80, 120, 100, 90, 100])
-        y_pred_ci = pd.DataFrame(
-            {
-                5: [96.8, 81.2, 71.4, 51.4, 86.5, 70.7, 82.3],
-                95: [118.1, 101.6, 100.1, 169.9, 121.1, 140.7, 98.2],
-            },
-            index=y.index,
-        )
+        y = pd.Series([100, 90, 80])
+        y_pred_ci = pd.DataFrame({5: [96, 81, 73], 95: [118, 101, 100]})
         data = compare.get_plot_data(y, y_pred_ci, "Treatment")
         assert len(data) == 4
         assert all([isinstance(d, go.Scatter) for d in data])
@@ -59,3 +47,10 @@ class TestCompare:
         y_pred = compare.get_baseline_prediction(y_pred_ci)
         assert isinstance(y_pred, pd.Series)
         assert y_pred.equals(pd.Series([19.0, 20.0, 21.0]))
+
+    def test_add_confidence_interval(self):
+        """Test the add_confidence_interval function."""
+        y_pred_ci = pd.DataFrame({5: [10, 11, 12], 95: [20, 21, 22]})
+        data = compare.add_confidence_interval(y_pred_ci, "red")
+        assert len(data) == 2
+        assert all([isinstance(d, go.Scatter) for d in data])
