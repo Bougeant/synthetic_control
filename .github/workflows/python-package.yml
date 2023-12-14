@@ -30,14 +30,6 @@ jobs:
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-    # - name: Run black validation
-    #   uses: psf/black@stable
-    #   with:
-    #     options: "--check --verbose"
-    # - name: Run isort validation
-    #   uses: isort/isort-action@master
-    #   with:
-    #       requirementsFiles: "requirements.txt requirements-dev.txt"
     - name: Lint with black, isort and flake8
       run: |
         black synthetic_control tests setup.py --check --verbose
@@ -45,4 +37,4 @@ jobs:
         flake8 synthetic_control tests setup.py  --count --max-complexity=10  --max-line-length=88 --show-source --statistics    
     - name: Test with pytest
       run: |
-        pytest 
+        pytest tests --cov --cov-report=xml --capture=no --verbose
