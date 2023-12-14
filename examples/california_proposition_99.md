@@ -34,7 +34,11 @@ df["Year"] = pd.to_datetime(df["Year"], format='%Y')
 ```
 
 ```python
-df = df.pivot(index="Year", columns="State",values="PacksPerCapita")
+df = df.pivot(index="Year", columns="State",values="PacksPerCapita").round(1)
+```
+
+```python
+df.head()
 ```
 
 ```python
