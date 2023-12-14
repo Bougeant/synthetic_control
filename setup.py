@@ -18,7 +18,7 @@ jupyter_requirements = ["jupyter", "jupyterlab<4", "jupytext"]
 
 setup(
     name="synthetic-control",
-    version="0.0.4",
+    version="0.0.5",
     url="http://github.com/Bougeant/synthetic_control",
     license_files=("LICENSE.txt",),
     description=("A user friendly package to use the Synthetic Control Method"),
