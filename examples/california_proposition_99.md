@@ -80,7 +80,7 @@ sc.compare(y, y_ci, y_axis="Packs of cigarettes per Capita")
 ### Impact
 
 ```python
-
+sc.impact(y, y_ci, y_axis="Packs of cigarettes per Capita")
 ```
 
 # Testing for false positives
