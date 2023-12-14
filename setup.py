@@ -22,7 +22,7 @@ setup(
     url="http://github.com/Bougeant/synthetic_control",
     license_files=("LICENSE.txt",),
     description=("A user friendly package to use the Synthetic Control Method"),
-    # long_description=open("README.rst", "r").read(),
+    long_description=open("README.rst", "r").read(),
     author="Olivier Bougeant",
     packages=find_packages(),
     include_package_data=True,
