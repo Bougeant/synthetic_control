@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.5 (2023-12-14)
+-------------------
+* Fix releases.
+
 0.0.4 (2023-12-14)
 -------------------
 * Comment out setup.py long description.
