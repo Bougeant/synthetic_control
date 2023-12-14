@@ -3,13 +3,13 @@
 """ Tests for synthetic_control.analysis.compare. """
 
 
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
 from synthetic_control.analysis import compare
-
-from datetime import datetime
 
 
 class TestCompare:
@@ -18,7 +18,7 @@ class TestCompare:
         y = pd.Series([100, 90, 80])
         y_pred_ci = pd.DataFrame({5: [96, 81, 73], 95: [118, 101, 100]})
         fig = compare.compare_to_synthetic_control(
-            y, y_pred_ci, datetime(2008, 1, 1), datetime(2010, 1, 1)
+            y, y_pred_ci, datetime(2008, 1, 1), datetime(2010, 1, 1),
         )
         assert isinstance(fig, go.Figure)
         assert len(fig.data) == 4
