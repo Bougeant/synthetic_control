@@ -134,10 +134,10 @@ def add_confidence_interval(y_pred_ci, color):
                 x=y_pred_ci.index,
                 y=y_pred_ci[col],
                 name=f"{ci_range}% confidence interval",
-                fill="tonexty",
+                fill="tonexty" if i > 0 else "none",
                 line_color=color,
                 fillcolor=color,
-                showlegend=i == 0,
+                showlegend=i == 1,
                 legendgroup="CI",
             )
         )
