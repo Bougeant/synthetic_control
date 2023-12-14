@@ -42,6 +42,7 @@ jobs:
       run: |
         black synthetic_control tests setup.py --check --verbose
         isort synthetic_control tests setup.py --check-only
-        flake8 synthetic_control tests setup.py  --count --max-complexity=10  --max-line-length=88 --show-source --statistics    - name: Test with pytest
+        flake8 synthetic_control tests setup.py  --count --max-complexity=10  --max-line-length=88 --show-source --statistics    
+    - name: Test with pytest
       run: |
-        pytest
+        pytest 
