@@ -3,6 +3,7 @@
 """ Functions to provide analysis for the synthetic control method. """
 
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 from plotly.colors import DEFAULT_PLOTLY_COLORS
 
@@ -14,6 +15,7 @@ def compare_to_synthetic_control(
     treatment_end=None,
     treatment_name="Treatment",
     y_axis="Value",
+    show_impact=False,
 ):
     """Display a comparison between the treatment group and the synthetic control group.
 
@@ -27,6 +29,13 @@ def compare_to_synthetic_control(
         The start of the treatment period.
     treatment_end : datetime
         The end of the treatment period.
+    treatment_name : str
+        The name of the treatment group.
+    y_axis : str
+        The label for the y-axis.
+    show_impact : bool
+        Whether to show the impact of the treatment on the treatment group instead of
+        the absolute values.
 
     Returns
     -------
@@ -34,14 +43,14 @@ def compare_to_synthetic_control(
         The plotly figure showing the comparison between the treatment group and the
         synthetic control group.
     """
-    data = get_plot_data(y, y_pred_ci, treatment_name)
-    layout = get_plot_layout(y_axis)
+    data = get_plot_data(y, y_pred_ci, treatment_name, show_impact)
+    layout = get_plot_layout(y_axis, show_impact)
     fig = go.Figure(data=data, layout=layout)
     fig = add_treatment_period(fig, treatment_start, treatment_end)
     return fig
 
 
-def get_plot_data(y, y_pred_ci, treatment_name):
+def get_plot_data(y, y_pred_ci, treatment_name, show_impact):
     """Create the plotly data for the comparison plot between the treatment group
     and the synthetic control group, including the confidence intervals.
 
@@ -63,6 +72,10 @@ def get_plot_data(y, y_pred_ci, treatment_name):
     treatment_color = DEFAULT_PLOTLY_COLORS[0]
     control_color = DEFAULT_PLOTLY_COLORS[1]
     y_pred = get_baseline_prediction(y_pred_ci)
+    if show_impact:
+        y_pred = (y_pred - y).copy()
+        y_pred_ci = (y_pred_ci.subtract(y, axis=0)).copy()
+        y = pd.Series(0, index=y.index)
     data = [
         go.Scatter(
             x=y.index,
@@ -195,7 +208,7 @@ def add_treatment_period(fig, treatment_start, treatment_end):
     return fig
 
 
-def get_plot_layout(y_axis):
+def get_plot_layout(y_axis, show_impact):
     """Return the plotly layout for the comparison plot between the treatment group
     and the synthetic control group.
 
@@ -210,7 +223,8 @@ def get_plot_layout(y_axis):
         The plotly layout for the comparison plot between the treatment group and the
         synthetic control group.
     """
+    y_title = f"Difference in {y_axis}" if show_impact else y_axis
     layout = go.Layout(
-        xaxis={"title": "Date"}, yaxis={"title": y_axis}, template="none"
+        xaxis={"title": "Date"}, yaxis={"title": y_title}, template="none"
     )
     return layout
