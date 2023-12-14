@@ -50,7 +50,22 @@ class TestCompare:
 
     def test_add_confidence_interval(self):
         """Test the add_confidence_interval function."""
-        y_pred_ci = pd.DataFrame({5: [10, 11, 12], 95: [20, 21, 22]})
+        y_pred_ci = pd.DataFrame(
+            {5: [10, 11, 12], 25: [13, 15, 15], 75: [18, 19, 20], 95: [20, 21, 22]}
+        )
         data = compare.add_confidence_interval(y_pred_ci, "red")
-        assert len(data) == 2
+        assert len(data) == 4
+        assert [d.name for d in data] == ["90% confidence interval"] * 4
         assert all([isinstance(d, go.Scatter) for d in data])
+
+    def test_add_treatment_period(self):
+        """Test the add_treatment_period function."""
+        fig = go.Figure()
+        fig = compare.add_treatment_period(
+            fig, datetime(2008, 1, 1), datetime(2010, 1, 1)
+        )
+        assert len(fig.layout.shapes) == 2
+        treatment_start = datetime.fromtimestamp(fig.layout.shapes[0].x0 / 1000)
+        treatment_end = datetime.fromtimestamp(fig.layout.shapes[1].x0 / 1000)
+        assert treatment_start == datetime(2008, 1, 1)
+        assert treatment_end == datetime(2010, 1, 1)
