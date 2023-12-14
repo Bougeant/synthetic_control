@@ -37,4 +37,9 @@ jobs:
         flake8 synthetic_control tests setup.py  --count --max-complexity=10  --max-line-length=88 --show-source --statistics    
     - name: Test with pytest
       run: |
-        pytest --cov --capture=no --verbose tests
+        pytest --cov --capture=no --verbose tests --cov-report xml:coverage/coverage.xml --cov-report term-missing
+    - name: Code Coverage Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage/coverage.xml
+        badge: true
