@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.14.5
+      jupytext_version: 1.16.0
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -18,10 +18,6 @@ jupyter:
 ```
 
 ```python
-cd ..
-```
-
-```python
 from datetime import datetime
 import pandas as pd
 from synthetic_control import SyntheticControl
@@ -30,7 +26,7 @@ from synthetic_control import SyntheticControl
 # Read California proposition 99 dataset
 
 ```python
-df = pd.read_csv("./examples/california_prop99.csv")
+df = pd.read_csv("./california_prop99.csv")
 ```
 
 ```python
