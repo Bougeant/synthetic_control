@@ -189,4 +189,16 @@ class SyntheticControl:
             treatment_end=self.treatment_end,
             treatment_name=self.treatment_name,
             y_axis=y_axis,
+            show_impact=False,
+        )
+
+    def impact(self, y, y_pred_ci, y_axis="Value"):
+        return compare.compare_to_synthetic_control(
+            y,
+            y_pred_ci,
+            treatment_start=self.treatment_start,
+            treatment_end=self.treatment_end,
+            treatment_name=self.treatment_name,
+            y_axis=y_axis,
+            show_impact=True,
         )
