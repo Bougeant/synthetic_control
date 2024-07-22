@@ -26,7 +26,7 @@ The synthetic control method has been applied by
 `Abadie, Diamond & Hainmueller <https://web.stanford.edu/~jhain/Paper/JASA2010.pdf>`_
 to demonstrate the impact of this policy on tobacco consumption in California.
 
-..  image:: .images/california_prop_99_comparison.png
+..  image:: .images/compare.png
 
 .. raw:: html
     :file: .images/california_prop_99_comparison.html
@@ -39,7 +39,7 @@ Install using pip::
 
 Usage
 ------------
-Read and prepare dataset::
+**Read and prepare dataset**::
 
    df = pd.read_csv("./california_prop99.csv")
    df["Year"] = pd.to_datetime(df["Year"], format='%Y')
@@ -47,10 +47,22 @@ Read and prepare dataset::
 
 ..  image:: .images/data.png
 
+**Run synthetic control method**::
 
+    sc = SyntheticControl(
+        treatment_start=datetime(year=1989, month=1, day=1), 
+        treatment_name="California"
+    )
+    y_pred = sc.get_results(df)
 
+**Compare treatment and synthetic control groups**::
 
+    sc.compare(df, y_pred, y_axis="Packs of cigarettes per Capita")
 
+..  image:: .images/compare.png
 
+**Visualize impact of treatment**::
 
+    sc.impact(df, y_pred, y_axis="Packs of cigarettes per Capita")
 
+..  image:: .images/impact.png
