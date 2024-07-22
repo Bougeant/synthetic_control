@@ -231,6 +231,6 @@ def get_plot_layout(y_axis, show_impact):
     """
     y_title = f"Difference in {y_axis}" if show_impact else y_axis
     layout = go.Layout(
-        xaxis={"title": "Date"}, yaxis={"title": y_title}, template="none"
+        xaxis={"title": "Date"}, yaxis={"title": y_title}, template="none", height=600
     )
     return layout
