@@ -38,23 +38,23 @@ class SyntheticControl:
 
     def __init__(
         self,
+        treatment_name,
         treatment_start,
         treatment_end=None,
-        treatment_name="Treatment",
         ci_sample_size=100,
-        ci_fraction=0.1,
+        ci_fraction=0.5,
         ci_percentiles=CI_PERCENTILES,
         **kwargs,
     ):
+        self.treatment_name = treatment_name
         self.treatment_start = treatment_start
         self.treatment_end = treatment_end
-        self.treatment_name = treatment_name
         self.ci_sample_size = ci_sample_size
         self.ci_fraction = ci_fraction
         self.ci_percentiles = ci_percentiles
         self.model = self._setup_model(**kwargs)
 
-    def _setup_model(self, alpha=1.0, positive=True, fit_intercept=False):
+    def _setup_model(self, alpha=100, positive=True, fit_intercept=True):
         """Setup the model to build the synthetic control group.
 
         Parameters
@@ -65,8 +65,8 @@ class SyntheticControl:
             Force the linear coefficients to be positive. This is recommended for
             creating a reasonable synthetic control group.
         fit_intercept : bool
-            Whether to fit the intercept for this model. It is recommended to se
-            if to False for creating a reasonable synthetic control group.
+            Whether to fit the intercept for this model. In some cases, setting
+            it to False is required for creating a reasonable synthetic control group.
 
         Returns
         -------
@@ -150,24 +150,24 @@ class SyntheticControl:
         self.fit(X, y)
         return self.model.predict(X)
 
-    def get_confidence_interval(self, X, y):
-        """Return the confidence interval on the predictions for the synthetic
-        control group. In order to generate a range of possible predictions, the
+    def get_results(self, df):
+        """Return the quantile predictions for the synthetic control group.
+        In order to generate a range of possible predictions, the
         pre-treatment fitting model is trained on a subset (ci_fraction) of the
         features.
 
         Parameters
         ----------
-        X : pandas.DataFrame
+        df : pandas.DataFrame
             The data used to build the synthetic control group.
-        y : pandas.Series
-            The treatment group to match outside of the treatment period.
 
         Returns
         -------
-        y_pred_ci : pandas.DataFrame
+        q_preds : pandas.DataFrame
             The quantile predictions for the synthetic control group.
         """
+        X = df.drop(columns=self.treatment_name)
+        y = df[self.treatment_name]
         preds = []
         for i in range(self.ci_sample_size):
             X_iter = X.T.sample(frac=self.ci_fraction, random_state=i, replace=False).T
@@ -178,12 +178,12 @@ class SyntheticControl:
             model.fit(X_train, y_train)
             y_pred = model.predict(X_iter)
             preds.append(y_pred)
-        ci = {q: np.percentile(preds, q=q, axis=0) for q in self.ci_percentiles}
-        return pd.DataFrame(ci, index=X.index)
+        q_preds = {q: np.percentile(preds, q=q, axis=0) for q in self.ci_percentiles}
+        return pd.DataFrame(q_preds, index=X.index)
 
-    def compare(self, y, y_pred_ci, y_axis="Value"):
+    def compare(self, df, y_pred_ci, y_axis="Value"):
         return compare.compare_to_synthetic_control(
-            y,
+            df[self.treatment_name],
             y_pred_ci,
             treatment_start=self.treatment_start,
             treatment_end=self.treatment_end,
@@ -192,9 +192,9 @@ class SyntheticControl:
             show_impact=False,
         )
 
-    def impact(self, y, y_pred_ci, y_axis="Value"):
+    def impact(self, df, y_pred_ci, y_axis="Value"):
         return compare.compare_to_synthetic_control(
-            y,
+            df[self.treatment_name],
             y_pred_ci,
             treatment_start=self.treatment_start,
             treatment_end=self.treatment_end,
