@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.16.0
+      jupytext_version: 1.16.3
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -41,25 +41,17 @@ df = df.pivot(index="Year", columns="State",values="PacksPerCapita").round(1)
 df.head()
 ```
 
-```python
-X = df.drop(columns="California")
-y = df["California"]
-```
-
 # Generate predictions for the Synthetic Control group
 
 ```python
 sc = SyntheticControl(
     treatment_start=datetime(year=1989, month=1, day=1), 
     treatment_name="California",
-    fit_intercept=True, 
-    alpha=100, 
-    ci_fraction=0.5
 )
 ```
 
 ```python
-y_ci = sc.get_confidence_interval(X, y)
+y_pred = sc.get_results(df)
 ```
 
 ### Composition of synthetic group
@@ -74,13 +66,13 @@ y_ci = sc.get_confidence_interval(X, y)
 ### Comparison
 
 ```python
-sc.compare(y, y_ci, y_axis="Packs of cigarettes per Capita")
+sc.compare(df, y_pred, y_axis="Packs of cigarettes per Capita")
 ```
 
 ### Impact
 
 ```python
-sc.impact(y, y_ci, y_axis="Packs of cigarettes per Capita")
+sc.impact(df, y_pred, y_axis="Packs of cigarettes per Capita")
 ```
 
 # Testing for false positives
@@ -89,46 +81,35 @@ sc.impact(y, y_ci, y_axis="Packs of cigarettes per Capita")
 ### Using a different treatment date
 
 ```python
-sc_1995 = SyntheticControl(
-    treatment_start=datetime(year=1995, month=1, day=1), 
+sc_1992 = SyntheticControl(
+    treatment_start=datetime(year=1992, month=1, day=1), 
     treatment_name="California",
-    fit_intercept=True, 
-    alpha=100, 
-    ci_fraction=0.5
 )
 ```
 
 ```python
-y_ci = sc_1995.get_confidence_interval(X, y)
+y_pred = sc_1992.get_results(df)
 ```
 
 ```python
-sc_1995.compare(y, y_ci, y_axis="Packs of cigarettes per Capita")
+sc_1992.compare(df, y_pred, y_axis="Packs of cigarettes per Capita")
 ```
 
 ### Application to the state of Pennsylvania 
 
 ```python
-X_penn = df.drop(columns="Pennsylvania")
-y_penn = df["Pennsylvania"]
-```
-
-```python
 sc_penn = SyntheticControl(
     treatment_start=datetime(year=1989, month=1, day=1), 
     treatment_name="Pennsylvania",
-    fit_intercept=True, 
-    alpha=100, 
-    ci_fraction=0.5
 )
 ```
 
 ```python
-y_ci_penn = sc_penn.get_confidence_interval(X_penn, y_penn)
+y_pred = sc_penn.get_results(df)
 ```
 
 ```python
-sc_penn.compare(y_penn, y_ci_penn, y_axis="Packs of cigarettes per Capita")
+sc_penn.compare(df, y_pred, y_axis="Packs of cigarettes per Capita")
 ```
 
 ```python
